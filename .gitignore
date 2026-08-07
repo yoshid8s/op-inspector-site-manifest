@@ -1,1 +1,26 @@
+# Reference binary
 vendor/canary/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Turbo cache
+.turbo/
+**/.turbo/
+
+# Build outputs
+dist/
+dist-*/
+**/dist/
+**/dist-*/
+
+web-ext-artifacts/
+**/web-ext-artifacts/
+
+# Environment files
+.env
+.env.*
+
+# macOS
+.DS_Store
