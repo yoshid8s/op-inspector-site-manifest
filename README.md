@@ -16,9 +16,11 @@ OP Inspectorにおけるサイトマニフェスト（Site Manifest）対応の�
 ## 開発対象サイト
 
 本プロトタイプは、下記の筆者が運営するファッションブログで動作を確認しています。
+
 https://style.yh-inc.jp/
 
 Webサイト環境
+
 WordPressをヘッドレスCMSとして使い、GitHub Astroで静的HTMLを生成し、運用しています。
 
 ## 本プロトタイプの位置付け
