@@ -189,3 +189,46 @@ https://style.yh-inc.jp/site-manifest.json
 ### Phase 3
 - 記事CAから段落CA、広告CA、リンク先サイトのSite Profileへの展開
 - OP仕様への提案に向けた検証
+
+## 現状
+
+Phase 1は完了しました。
+
+✅ `ExternalResourceTargetIntegrity` を介して Site Manifest を解決可能です。
+
+✅ Inspector は、`site-manifest.json` で参照されているすべての記事カードをハイライト表示します。
+
+これは、Content Attestation が外部マニフェストを通じて、現在の HTML ドキュメント外にあるリソースを検証・可視化できることを実証しています。
+
+### Phase 1　完了後のJiJi Styleトップページ
+CAが他のリソースを参照し、そのリソースを介して複数のコンテンツを検証対象にできるという新しい利用モデルを実証しています。
+
+これまでInspectorは
+
+```
+TextTargetIntegrity
+    ↓
+cssSelector
+    ↓
+DOM要素
+```
+
+だけを対象としていましたが、今回初めて
+
+```
+ExternalResourceTargetIntegrity
+        ↓
+Site Manifest
+        ↓
+複数ページ
+        ↓
+複数カード
+```
+
+という階層的な対象指定が実現できました。
+
+下の画像にある、記事リンクを囲う点線は、DOM要素に含まれるCAではなく、
+サイトマニフェストで指定されたCA発行済みの記事のリンク要素を本プロトタイプが表示しています。
+
+<img width="1443" height="803" alt="image" src="https://github.com/user-attachments/assets/76e749f7-06d2-40b9-8833-c5d765d71809" />
+
