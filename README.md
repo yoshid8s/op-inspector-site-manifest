@@ -21,7 +21,9 @@ https://style.yh-inc.jp/
 
 Webサイト環境
 
-WordPressをヘッドレスCMSとして使い、GitHub Astroで静的HTMLを生成し、運用しています。
+WordPressをヘッドレスCMSとして使い、GitHub Astroでフロントエンド静的HTMLを生成し、運用しています。
+フロントエンドHTML生成とCA発行は、GitHub Actions を利用しています。
+現状、手動対応ですが、今後、自動化する予定です。
 
 ## 本プロトタイプの位置付け
 
