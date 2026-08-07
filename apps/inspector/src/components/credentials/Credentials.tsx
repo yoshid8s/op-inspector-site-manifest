@@ -25,6 +25,7 @@ import { listCas } from "./cas";
 import { getContentType } from "./get-content-type";
 import { isArticleLike } from "./is-articlelike";
 import { CredentialsProps, SupportedVerifiedCa } from "./types";
+import { SiteTrustGraph } from "../trust-tree";
 
 export function Credentials(props: CredentialsProps) {
   const [caListType, setCaListType] =
@@ -155,6 +156,8 @@ export function Credentials(props: CredentialsProps) {
             {ca.credentialSubject.description && (
               <Description description={ca.credentialSubject.description} />
             )}
+
+            <SiteTrustGraph tabId={Number(tabId)} targets={ca.target ?? []} />
           </div>
         </div>
       </main>

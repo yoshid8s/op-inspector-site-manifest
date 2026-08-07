@@ -12,6 +12,9 @@ import {
 } from "./components/overlay";
 import { overlayExtensionMessenger } from "./components/overlay/extension-events";
 import { siteProfileMessenger } from "./components/siteProfile";
+import { TargetIntegrityAlgorithm } from "@originator-profile/verify";
+import { trustTreeMessenger } from "./components/trust-tree";
+import { resolveSiteManifest } from "./services/external-resource/site-manifest-resolver";
 
 const overlay = new Overlay();
 let enter: Parameters<OverlayProtocolMap["enter"]>[0] = {
@@ -64,4 +67,44 @@ frameCasWindowMessenger.onMessage("startLocate", () => {
     tabId,
     framesCas,
   });
+});
+
+trustTreeMessenger.onMessage("resolveSiteTrustGraph", async ({ data }) => {
+  const externalTargets = data.targets.filter(
+    (target) => target.type === "ExternalResourceTargetIntegrity",
+  );
+
+  for (const target of externalTargets) {
+    const resourceElements = TargetIntegrityAlgorithm[
+      target.type
+    ].elementSelector({
+      ...target,
+      document,
+    });
+
+    for (const resourceElement of resourceElements) {
+      const element = resourceElement as HTMLElement & {
+        src?: string;
+        currentSrc?: string;
+      };
+
+      const src = element.currentSrc || element.src;
+
+      if (!src) {
+        continue;
+      }
+
+      try {
+        const resolved = await resolveSiteManifest(src);
+
+        if (resolved) {
+          return resolved.root;
+        }
+      } catch {
+        // The external resource may not be a Site Manifest.
+      }
+    }
+  }
+
+  return null;
 });
