@@ -1,0 +1,47 @@
+{
+  "name": "@originator-profile/sign",
+  "version": "0.7.0-beta.1",
+  "license": "Apache-2.0",
+  "homepage": "https://docs.originator-profile.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/originator-profile/originator-profile.git",
+    "directory": "packages/sign"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "pkgroll --clean-dist",
+    "test": "vitest run",
+    "lint": "oxlint --fix ."
+  },
+  "dependencies": {
+    "@originator-profile/cryptography": "workspace:*",
+    "@originator-profile/model": "workspace:*",
+    "@originator-profile/securing-mechanism": "workspace:*",
+    "jose": "^6.2.2"
+  },
+  "devDependencies": {
+    "@originator-profile/tsconfig": "workspace:*",
+    "date-fns": "4.1.0",
+    "oxlint": "^1.73.0",
+    "oxlint-tsgolint": "^0.24.0",
+    "pkgroll": "2.27.0",
+    "typescript": "6.0.2",
+    "vitest": "4.1.4",
+    "websri": "1.0.1",
+    "zod": "4.4.3"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "@originator-profile/originator-profile",
+  "description": "Originator Profile Project",
+  "version": "0.7.0-beta.1",
+  "license": "Apache-2.0",
+  "private": true,
+  "homepage": "https://docs.originator-profile.org",
+  "repository": "https://github.com/originator-profile/originator-profile",
+  "type": "module",
+  "scripts": {
+    "build": "turbo run build",
+    "build-for-amo": "pnpm --dir=apps/inspector run build-for-amo",
+    "version": "node --run=build && node scripts/update-readme-environments.ts && git add apps/*/README.md packages/*/README.md",
+    "dev": "turbo run dev --parallel --env-mode=loose",
+    "e2e": "turbo run e2e --concurrency=1 --filter=!@originator-profile/wordpress",
+    "e2e:update": "turbo run e2e:update --concurrency=1 --filter=!@originator-profile/wordpress",
+    "test": "turbo run test --continue",
+    "lint": "turbo run lint --continue",
+    "format": "prettier --write .",
+    "update": "run-s update:pnpm update:dedupe",
+    "update:pnpm": "pnpm --recursive update --latest",
+    "update:dedupe": "pnpm dedupe",
+    "docs": "run-s docs:ts docs:build",
+    "docs:ts": "typedoc",
+    "docs:build": "astro build",
+    "docs:preview": "astro preview"
+  },
+  "devDependencies": {
+    "@lerna-lite/cli": "4.11.5",
+    "@lerna-lite/version": "4.11.5",
+    "@types/jsdom": "28.0.1",
+    "astro": "6.4.6",
+    "js-yaml": "5.2.0",
+    "npm-run-all2": "8.0.4",
+    "prettier": "3.8.2",
+    "prettier-plugin-organize-imports": "4.3.0",
+    "turbo": "2.9.14",
+    "typedoc": "0.28.19"
+  },
+  "engines": {
+    "node": "^22.18.0 || ^24.10.0 || ^26.2.0"
+  },
+  "packageManager": "pnpm@11.0.9"
+}
