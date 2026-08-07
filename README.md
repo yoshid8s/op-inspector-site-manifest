@@ -19,13 +19,10 @@ OP Inspectorにおけるサイトマニフェスト（Site Manifest）対応の�
 
 https://style.yh-inc.jp/
 
-Webサイト環境
+### Webサイト環境
 
-WordPressをヘッドレスCMSとして利用し、
-WordPress REST APIから取得したコンテンツをAstroで静的HTMLとして生成しています。
-
-フロントエンドのビルドおよびCA発行にはGitHub Actionsを利用しています。
-現在、一部の処理は手動ですが、今後さらに自動化する予定です。
+- WordPressをヘッドレスCMSとして利用し、WordPress REST APIから取得したコンテンツをAstroで静的HTMLとして生成しています。
+- フロントエンドのビルドおよびCA発行にはGitHub Actionsを利用しています。現在、一部の処理は手動ですが、今後さらに自動化する予定です。
 
 ## 本プロトタイプの位置付け
 
