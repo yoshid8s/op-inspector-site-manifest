@@ -1,2 +1,175 @@
-# op-inspector-site-manifest
+# OP Inspector サイトマニフェスト・プロトタイプ
+
 Site Manifest対応の拡張機能プロトタイプ
+
+OP Inspectorにおけるサイトマニフェスト（Site Manifest）対応のプロトタイプ実装です。
+
+## 本プロトタイプの位置付け
+
+本プロトタイプは、OSSと位置付けられているOP技術を独自に拡張するもので
+OP組合の公式プロトタイプではありません。
+
+## 概要
+
+本プロトタイプは、OP組合が公開している[CA Playground(試験環境）向けのChrome拡張機能](https://github.com/originator-profile/originator-profile/releases/tag/canary)を拡張したものです。
+
+本リポジトリでは、サイトマニフェストを活用して、以下の要素を接続する「サイトCAツリー（Site CA Tree）」を構築する方法を検証します。
+
+```
+サイト
+├── 特集記事
+├── カテゴリ別記事
+└── 段落レベルのコンテンツ証明（Content Attestations）
+```
+
+## 目的
+
+本プロトタイプの目的は、ウェブサイト全体と個々のコンテンツ証明との間の信頼関係を可視化し、検証することにあります。
+
+本プロトタイプが利用する「サイトマニフェスト」はOP技術を使い
+
+```
+「サイトCA → 記事CA → 段落CA」という階層構造
+```
+
+を初めて視覚的に表現するものです。
+
+サイトマニュフェストをWebサーバー上に配置することで、検索エンジンや生成AIは
+
+- サイト全体を信頼する
+- その中の記事を信頼する
+- 記事内の段落まで検証する
+
+という当該サイトの階層的な信頼モデルを理解できます。
+
+しかしながら、サイトマニュフェストを人が理解することは難しいため、
+本プロトタイプで、当該サイトの階層的な信頼モデルを可視化することに取り組みます。
+
+## サイトマニュフェストの具体例
+
+以下は、本プロトタイプを検証するために利用するファッションブログ JiJi Styleに搭載されたサイトマニュフェストです。
+JiJi Styleのトップページに含まれる１６の記事ページへのリンク構成を示すものです。
+
+https://style.yh-inc.jp/site-manifest.json
+
+```
+{
+  "site": "https://style.yh-inc.jp/",
+  "page": "https://style.yh-inc.jp/",
+  "generatedAt": "2026-08-06T07:26:39.255Z",
+  "items": [
+    {
+      "position": 1,
+      "role": "featured",
+      "headline": "ジジイのCabana Shirt Style",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEcabana-shirt-style/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/3623_cas.json"
+    },
+    {
+      "position": 2,
+      "role": "daily-style",
+      "headline": "ジジイのSummer White Shirt Styles : 3 looks",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEsummer-white-shirt-styles-3-looks/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/3601_cas.json"
+    },
+    {
+      "position": 3,
+      "role": "daily-style",
+      "headline": "Black T-shirt style—inspired by Giorgio Armani.",
+      "url": "https://style.yh-inc.jp/black-t-shirt-style-inspired-by-giorgio-armani/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/3589_cas.json"
+    },
+    {
+      "position": 4,
+      "role": "daily-style",
+      "headline": "Summer “Amekaji” T shirt Style",
+      "url": "https://style.yh-inc.jp/summer-amekaji-t-shirt-style/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/3575_cas.json"
+    },
+    {
+      "position": 5,
+      "role": "wardrobe",
+      "headline": "ジジイ in Paris / Memories of January 2020",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4-in-paris-memories-of-january-2020/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/446_cas.json"
+    },
+    {
+      "position": 6,
+      "role": "wardrobe",
+      "headline": "Rainy day / Eral55 jacket with chino pants",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AErainy-day-jacket-style-eral55-jacket-with-chino-pants/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/485_cas.json"
+    },
+    {
+      "position": 7,
+      "role": "wardrobe",
+      "headline": "Weekend Style / Lemaire Field Jacket with Eral 55 light weight cotton pants",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEweekend-style-lemaire-field-jacket-with-eral-55-light-weight-cotton-pants/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/454_cas.json"
+    },
+    {
+      "position": 8,
+      "role": "wardrobe",
+      "headline": "Sartorio Peak-Lapel Single Breasted Suit",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEpeak-lapel-single-breasted-suit/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/389_cas.json"
+    },
+    {
+      "position": 9,
+      "role": "wardrobe",
+      "headline": "Vintage Safari Jacket Style",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEsafari-jacket-style/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/356_cas.json"
+    },
+    {
+      "position": 10,
+      "role": "wardrobe",
+      "headline": "Denim on denim style / white denim combination with Svevo knit polo",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEdenim-on-denim-style-white-denim-combination-with-svevo-knit-polo/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/324_cas.json"
+    },
+    {
+      "position": 11,
+      "role": "classic-menswear",
+      "headline": "What exactly is “Sprezzatura,” a suit style that looks relaxed and natural?",
+      "url": "https://style.yh-inc.jp/what-exactly-is-sprezzatura-a-suit-style-that-looks-relaxed-and-natural/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/3409_cas.json"
+    },
+    {
+      "position": 12,
+      "role": "classic-menswear",
+      "headline": "Classic knitwear that gentlemen should choose, SVEVO",
+      "url": "https://style.yh-inc.jp/classic-knitwear-that-gentlemen-should-choose-svevo/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/3511_cas.json"
+    },
+    {
+      "position": 13,
+      "role": "classic-menswear",
+      "headline": "ジジイのOff White Jacket style with Dark green trousers",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEoff-white-jacket-style-with-dark-green-trousers/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/339_cas.json"
+    },
+    {
+      "position": 14,
+      "role": "classic-menswear",
+      "headline": "ジジイのClassic Navy Suit Style",
+      "url": "https://style.yh-inc.jp/classic-navy-suit-style/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/688_cas.json"
+    },
+    {
+      "position": 15,
+      "role": "classic-menswear",
+      "headline": "ジジイのBlue cotton suit style",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEblue-cotton-suit-style/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/705_cas.json"
+    },
+    {
+      "position": 16,
+      "role": "classic-menswear",
+      "headline": "ジジイのSolaro suit style / Liverano & Liverano",
+      "url": "https://style.yh-inc.jp/%E3%82%B8%E3%82%B8%E3%82%A4%E3%81%AEsolaro-suit-style-liverano-liverano/",
+      "casUrl": "https://style.yh-inc.jp/astro-cas/581_cas.json"
+    }
+  ]
+}
+```
