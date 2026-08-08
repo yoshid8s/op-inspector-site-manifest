@@ -122,6 +122,17 @@ trustTreeMessenger.onMessage("focusTrustNode", ({ data }) => {
     block: "center",
   });
 
+  const previousOutline = element.style.outline;
+  const previousOutlineOffset = element.style.outlineOffset;
+
+  element.style.outline = "3px solid currentColor";
+  element.style.outlineOffset = "4px";
+
+  window.setTimeout(() => {
+    element.style.outline = previousOutline;
+    element.style.outlineOffset = previousOutlineOffset;
+  }, 2000);
+
   return true;
 });
 
