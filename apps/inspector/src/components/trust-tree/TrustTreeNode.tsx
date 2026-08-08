@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { TrustNode } from "../../models/trust-node";
 
 type Props = {
@@ -5,41 +6,75 @@ type Props = {
   depth?: number;
 };
 
-function getMarker(node: TrustNode) {
-  if (node.children && node.children.length > 0) {
-    return "▾";
-  }
-
-  return "•";
-}
-
 export function TrustTreeNode({
   node,
   depth = 0,
 }: Props) {
+  const hasChildren =
+    Boolean(node.children && node.children.length > 0);
+
+  const isRoot = depth === 0;
+
+  const canToggle =
+    !isRoot &&
+    node.type === "section" &&
+    hasChildren;
+
+  const [isExpanded, setIsExpanded] =
+    useState(true);
+
+  const showChildren =
+    hasChildren &&
+    (isRoot || !canToggle || isExpanded);
+
   return (
     <li>
       <div
-        className="flex items-start gap-2 py-1"
+        className="flex items-start gap-1.5 py-1 rounded hover:bg-gray-100"
         style={{
-          paddingLeft: `${depth * 16}px`,
+          paddingLeft: `${depth * 12}px`,
         }}
       >
-        <span
-          aria-hidden="true"
-          className="shrink-0 text-gray-500"
-        >
-          {getMarker(node)}
-        </span>
+        {canToggle ? (
+          <button
+            type="button"
+            aria-expanded={isExpanded}
+            aria-label={
+              isExpanded
+                ? `Collapse ${node.title}`
+                : `Expand ${node.title}`
+            }
+            className="shrink-0 w-4 text-gray-500 cursor-pointer"
+            onClick={() =>
+              setIsExpanded((value) => !value)
+            }
+          >
+            {isExpanded ? "▾" : "▸"}
+          </button>
+        ) : hasChildren ? (
+          <span
+            aria-hidden="true"
+            className="shrink-0 w-4 text-gray-500"
+          >
+            ▾
+          </span>
+        ) : (
+          <span
+            aria-hidden="true"
+            className="shrink-0 w-4 text-gray-400"
+          >
+            •
+          </span>
+        )}
 
         <span className="min-w-0 break-words">
           {node.title}
         </span>
       </div>
 
-      {node.children && node.children.length > 0 && (
+      {showChildren && (
         <ul>
-          {node.children.map((child) => (
+          {node.children?.map((child) => (
             <TrustTreeNode
               key={child.id}
               node={child}
