@@ -174,18 +174,3 @@ function findTrustNodeElement(
     anchor
   );
 }
-
-trustTreeMessenger.onMessage("focusTrustNode", ({ data }) => {
-  const element = findTrustNodeElement(document, data.url);
-
-  if (!element) {
-    return false;
-  }
-
-  element.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
-
-  return true;
-});
