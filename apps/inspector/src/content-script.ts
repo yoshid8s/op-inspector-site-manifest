@@ -12,6 +12,7 @@ import {
 } from "./components/overlay";
 import { overlayExtensionMessenger } from "./components/overlay/extension-events";
 import { siteProfileMessenger } from "./components/siteProfile";
+
 import { TargetIntegrityAlgorithm } from "@originator-profile/verify";
 import { trustTreeMessenger } from "./components/trust-tree";
 import { resolveSiteManifest } from "./services/external-resource/site-manifest-resolver";
@@ -107,4 +108,84 @@ trustTreeMessenger.onMessage("resolveSiteTrustGraph", async ({ data }) => {
   }
 
   return null;
+});
+
+trustTreeMessenger.onMessage("focusTrustNode", ({ data }) => {
+  const element = findTrustNodeElement(document, data.url);
+
+  if (!element) {
+    return false;
+  }
+
+  element.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+
+  return true;
+});
+
+function normalizeTrustUrl(value: string, baseUrl: string): string | null {
+  try {
+    const url = new URL(value, baseUrl);
+    url.hash = "";
+
+    if (url.pathname !== "/" && url.pathname.endsWith("/")) {
+      url.pathname = url.pathname.replace(/\/+$/, "");
+    }
+
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+function findTrustNodeElement(
+  document: Document,
+  targetUrl: string,
+): HTMLElement | null {
+  const expected = normalizeTrustUrl(targetUrl, document.location.href);
+
+  if (!expected) {
+    return null;
+  }
+
+  const anchors = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>("a[href]"),
+  );
+
+  const anchor = anchors.find((candidate) => {
+    const candidateUrl = normalizeTrustUrl(
+      candidate.href,
+      document.location.href,
+    );
+
+    return candidateUrl === expected;
+  });
+
+  if (!anchor) {
+    return null;
+  }
+
+  return (
+    anchor.closest<HTMLElement>("article") ??
+    anchor.closest<HTMLElement>("li") ??
+    anchor.closest<HTMLElement>("section") ??
+    anchor
+  );
+}
+
+trustTreeMessenger.onMessage("focusTrustNode", ({ data }) => {
+  const element = findTrustNodeElement(document, data.url);
+
+  if (!element) {
+    return false;
+  }
+
+  element.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+
+  return true;
 });

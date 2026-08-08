@@ -9,24 +9,19 @@ type Props = {
   targets: Target[];
 };
 
-export function SiteTrustGraph({
-  tabId,
-  targets,
-}: Props) {
-  const [root, setRoot] =
-    useState<TrustNode | null>(null);
+export function SiteTrustGraph({ tabId, targets }: Props) {
+  const [root, setRoot] = useState<TrustNode | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       try {
-        const resolved =
-          await trustTreeMessenger.sendMessage(
-            "resolveSiteTrustGraph",
-            { targets },
-            tabId,
-          );
+        const resolved = await trustTreeMessenger.sendMessage(
+          "resolveSiteTrustGraph",
+          { targets },
+          tabId,
+        );
 
         if (!cancelled) {
           setRoot(resolved);
@@ -45,13 +40,25 @@ export function SiteTrustGraph({
     };
   }, [tabId, targets]);
 
+  async function handleSelect(node: TrustNode) {
+    if (!node.url) {
+      return;
+    }
+
+    await trustTreeMessenger.sendMessage(
+      "focusTrustNode",
+      { url: node.url },
+      tabId,
+    );
+  }
+
   if (!root) {
     return null;
   }
 
   return (
     <div className="mt-4 border-t border-gray-200 pt-4">
-      <TrustTree root={root} />
+      <TrustTree root={root} onSelect={handleSelect} />
     </div>
   );
 }

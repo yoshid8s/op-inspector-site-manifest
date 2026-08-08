@@ -4,33 +4,24 @@ import { TrustNode } from "../../models/trust-node";
 type Props = {
   node: TrustNode;
   depth?: number;
+  onSelect?: (node: TrustNode) => void;
 };
 
-export function TrustTreeNode({
-  node,
-  depth = 0,
-}: Props) {
-  const hasChildren =
-    Boolean(node.children && node.children.length > 0);
+export function TrustTreeNode({ node, depth = 0, onSelect }: Props) {
+  const hasChildren = Boolean(node.children && node.children.length > 0);
 
   const isRoot = depth === 0;
 
-  const canToggle =
-    !isRoot &&
-    node.type === "section" &&
-    hasChildren;
+  const canToggle = !isRoot && node.type === "section" && hasChildren;
 
-  const [isExpanded, setIsExpanded] =
-    useState(true);
+  const [isExpanded, setIsExpanded] = useState(true);
 
-  const showChildren =
-    hasChildren &&
-    (isRoot || !canToggle || isExpanded);
+  const showChildren = hasChildren && (isRoot || !canToggle || isExpanded);
 
   return (
     <li>
       <div
-        className="flex items-start gap-1.5 py-1 rounded hover:bg-gray-100"
+        className="flex items-start gap-1.5 py-1 rounded"
         style={{
           paddingLeft: `${depth * 12}px`,
         }}
@@ -40,36 +31,34 @@ export function TrustTreeNode({
             type="button"
             aria-expanded={isExpanded}
             aria-label={
-              isExpanded
-                ? `Collapse ${node.title}`
-                : `Expand ${node.title}`
+              isExpanded ? `Collapse ${node.title}` : `Expand ${node.title}`
             }
             className="shrink-0 w-4 text-gray-500 cursor-pointer"
-            onClick={() =>
-              setIsExpanded((value) => !value)
-            }
+            onClick={() => setIsExpanded((value) => !value)}
           >
             {isExpanded ? "▾" : "▸"}
           </button>
         ) : hasChildren ? (
-          <span
-            aria-hidden="true"
-            className="shrink-0 w-4 text-gray-500"
-          >
+          <span aria-hidden="true" className="shrink-0 w-4 text-gray-500">
             ▾
           </span>
         ) : (
-          <span
-            aria-hidden="true"
-            className="shrink-0 w-4 text-gray-400"
-          >
+          <span aria-hidden="true" className="shrink-0 w-4 text-gray-400">
             •
           </span>
         )}
 
-        <span className="min-w-0 break-words">
-          {node.title}
-        </span>
+        {node.type === "article" ? (
+          <button
+            type="button"
+            className="min-w-0 break-words text-left cursor-pointer"
+            onClick={() => onSelect?.(node)}
+          >
+            {node.title}
+          </button>
+        ) : (
+          <span className="min-w-0 break-words">{node.title}</span>
+        )}
       </div>
 
       {showChildren && (
@@ -79,6 +68,7 @@ export function TrustTreeNode({
               key={child.id}
               node={child}
               depth={depth + 1}
+              onSelect={onSelect}
             />
           ))}
         </ul>
