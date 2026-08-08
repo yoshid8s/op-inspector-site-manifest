@@ -1,0 +1,98 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<link> 要素が2つ以上存在するとき > 有効な Profile Set が得られる 1`] = `
+[
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "profiles": "{Signed Document Profile または Signed Originator Profile}",
+  },
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "profiles": "{別の Signed Document Profile または Signed Originator Profile}",
+  },
+]
+`;
+
+exports[`<script>要素から Profile Set を取得する > <script> から profile set を取得できる 1`] = `
+[
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "main": [
+      "https://example.org",
+    ],
+    "profile": [
+      "{Signed Document Profile または Signed Originator Profile}",
+    ],
+  },
+]
+`;
+
+exports[`<script>要素から Profile Set を取得する > <script> が2つ以上存在する 1`] = `
+[
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "main": [
+      "https://example.org",
+    ],
+    "profile": [
+      "{Signed Document Profile または Signed Originator Profile}",
+    ],
+  },
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "main": [
+      "https://example.org",
+    ],
+    "profile": [
+      "{Signed Document Profile または Signed Originator Profile}",
+    ],
+  },
+]
+`;
+
+exports[`<script>要素から Profile Set を取得する > <script> と <link> から profile set を取得できる 1`] = `
+[
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "main": [
+      "https://example.org",
+    ],
+    "profile": [
+      "{Signed Document Profile または Signed Originator Profile}",
+    ],
+  },
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "main": [
+      "https://example.com",
+    ],
+    "profile": [
+      "{Signed Document Profile または Signed Originator Profile}",
+      "{Signed Document Profile または Signed Originator Profile}",
+    ],
+  },
+]
+`;
+
+exports[`ad Profile Pair が存在するとき > 有効な ad Profile Pair と Profile Set が得られる 1`] = `
+[
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "ad": {
+      "dp": {
+        "profile": "sdp1...",
+        "sub": "9a96268b-a937-4468-8b4e-5dc488a7865f",
+      },
+      "op": {
+        "iss": "originator-profile.org",
+        "profile": "sop1...",
+        "sub": "example.com",
+      },
+    },
+  },
+  {
+    "@context": "https://originator-profile.org/context.jsonld",
+    "profiles": "{Signed Document Profile または Signed Originator Profile}",
+  },
+]
+`;

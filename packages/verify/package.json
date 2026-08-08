@@ -1,0 +1,60 @@
+{
+  "name": "@originator-profile/verify",
+  "version": "0.7.0-beta.1",
+  "license": "Apache-2.0",
+  "homepage": "https://docs.originator-profile.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/originator-profile/originator-profile.git",
+    "directory": "packages/verify"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "pkgroll --clean-dist",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "e2e:update": "playwright test --update-snapshots",
+    "lint": "oxlint --fix ."
+  },
+  "dependencies": {
+    "@originator-profile/core": "workspace:*",
+    "@originator-profile/cryptography": "workspace:*",
+    "@originator-profile/model": "workspace:*",
+    "@originator-profile/securing-mechanism": "workspace:*",
+    "@originator-profile/sign": "workspace:*",
+    "@types/jsonld": "^1.5.15",
+    "jose": "^6.2.2",
+    "jsonld": "^9.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@originator-profile/tsconfig": "workspace:*",
+    "@playwright/test": "1.59.1",
+    "date-fns": "4.1.0",
+    "happy-dom": "20.8.9",
+    "just-diff-apply": "5.5.0",
+    "just-typeof": "3.2.0",
+    "oxlint": "^1.73.0",
+    "oxlint-tsgolint": "^0.24.0",
+    "pkgroll": "2.27.0",
+    "playwright": "1.59.1",
+    "typescript": "6.0.2",
+    "urlpattern-polyfill": "10.1.0",
+    "vite": "8.0.16",
+    "vitest": "4.1.4",
+    "websri": "1.0.1"
+  }
+}

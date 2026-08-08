@@ -1,0 +1,19 @@
+{
+  "name": "tailwind-config-originator-profile",
+  "version": "0.7.0-beta.1",
+  "license": "Apache-2.0",
+  "private": true,
+  "homepage": "https://docs.originator-profile.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/originator-profile/originator-profile.git",
+    "directory": "packages/tailwind-config"
+  },
+  "type": "module",
+  "exports": "./style.css",
+  "devDependencies": {
+    "@jumpu-ui/tailwindcss": "2.0.1",
+    "@tailwindcss/typography": "0.5.19",
+    "tailwindcss": "4.2.2"
+  }
+}

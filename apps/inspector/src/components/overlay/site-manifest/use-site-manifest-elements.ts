@@ -1,7 +1,8 @@
 import { Target } from "@originator-profile/model";
 import { TargetIntegrityAlgorithm } from "@originator-profile/verify";
 import { useEffect, useState } from "react";
-import { isSiteManifest } from "./types";
+import { TrustNode } from "../../../models/trust-node";
+import { resolveSiteManifest } from "../../../services/external-resource/site-manifest-resolver";
 
 function normalizeUrl(value: string, baseUrl: string): string | null {
   try {
@@ -23,7 +24,10 @@ function findLinkedElement(
   document: Document,
   itemUrl: string,
 ): HTMLElement | null {
-  const expectedUrl = normalizeUrl(itemUrl, document.location.href);
+  const expectedUrl = normalizeUrl(
+    itemUrl,
+    document.location.href,
+  );
 
   if (!expectedUrl) {
     return null;
@@ -54,6 +58,16 @@ function findLinkedElement(
   );
 }
 
+function getArticleNodes(node: TrustNode): TrustNode[] {
+  const own =
+    node.type === "article" ? [node] : [];
+
+  const children =
+    node.children?.flatMap(getArticleNodes) ?? [];
+
+  return [...own, ...children];
+}
+
 export function useSiteManifestElements(targets: Target[]) {
   const [elements, setElements] = useState<HTMLElement[]>([]);
 
@@ -64,7 +78,8 @@ export function useSiteManifestElements(targets: Target[]) {
       const document = window.parent.document;
 
       const externalTargets = targets.filter(
-        (target) => target.type === "ExternalResourceTargetIntegrity",
+        (target) =>
+          target.type === "ExternalResourceTargetIntegrity",
       );
 
       const manifestElements: HTMLElement[] = [];
@@ -91,36 +106,41 @@ export function useSiteManifestElements(targets: Target[]) {
           }
 
           try {
-            const response = await fetch(src);
+            const resolved =
+              await resolveSiteManifest(src);
 
-            if (!response.ok) {
+            if (!resolved) {
               continue;
             }
 
-            const payload = await response.json();
+            const articleNodes =
+              getArticleNodes(resolved.root);
 
-            if (!isSiteManifest(payload)) {
-              continue;
-            }
+            for (const article of articleNodes) {
+              if (!article.url) {
+                continue;
+              }
 
-            for (const item of payload.items) {
-              const linkedElement = findLinkedElement(
-                document,
-                item.url,
-              );
+              const linkedElement =
+                findLinkedElement(
+                  document,
+                  article.url,
+                );
 
               if (linkedElement) {
                 manifestElements.push(linkedElement);
               }
             }
           } catch {
-            // External resource may not be a Site Manifest JSON.
+            // External resource may not be a Site Manifest.
           }
         }
       }
 
       if (!cancelled) {
-        setElements([...new Set(manifestElements)]);
+        setElements([
+          ...new Set(manifestElements),
+        ]);
       }
     }
 
