@@ -5,9 +5,18 @@ type Props = {
   node: TrustNode;
   depth?: number;
   onSelect?: (node: TrustNode) => void;
+  selectedUrl?: string | null;
 };
 
-export function TrustTreeNode({ node, depth = 0, onSelect }: Props) {
+export function TrustTreeNode({
+  node,
+  depth = 0,
+  onSelect,
+  selectedUrl,
+}: Props) {
+  const isSelected =
+    node.type === "article" && Boolean(node.url) && node.url === selectedUrl;
+
   const hasChildren = Boolean(node.children && node.children.length > 0);
 
   const isRoot = depth === 0;
@@ -51,7 +60,10 @@ export function TrustTreeNode({ node, depth = 0, onSelect }: Props) {
         {node.type === "article" ? (
           <button
             type="button"
-            className="min-w-0 break-words text-left cursor-pointer"
+            className={[
+              "min-w-0 break-words text-left cursor-pointer rounded px-1",
+              isSelected ? "font-bold bg-gray-200" : "",
+            ].join(" ")}
             onClick={() => onSelect?.(node)}
           >
             {node.title}
@@ -69,6 +81,7 @@ export function TrustTreeNode({ node, depth = 0, onSelect }: Props) {
               node={child}
               depth={depth + 1}
               onSelect={onSelect}
+              selectedUrl={selectedUrl}
             />
           ))}
         </ul>

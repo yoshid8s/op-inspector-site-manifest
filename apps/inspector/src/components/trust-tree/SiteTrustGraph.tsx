@@ -11,6 +11,7 @@ type Props = {
 
 export function SiteTrustGraph({ tabId, targets }: Props) {
   const [root, setRoot] = useState<TrustNode | null>(null);
+  const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,6 +46,8 @@ export function SiteTrustGraph({ tabId, targets }: Props) {
       return;
     }
 
+    setSelectedUrl(node.url);
+
     await trustTreeMessenger.sendMessage(
       "focusTrustNode",
       { url: node.url },
@@ -58,7 +61,11 @@ export function SiteTrustGraph({ tabId, targets }: Props) {
 
   return (
     <div className="mt-4 border-t border-gray-200 pt-4">
-      <TrustTree root={root} onSelect={handleSelect} />
+      <TrustTree
+        root={root}
+        onSelect={handleSelect}
+        selectedUrl={selectedUrl}
+      />
     </div>
   );
 }
