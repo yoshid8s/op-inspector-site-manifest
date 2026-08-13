@@ -28,6 +28,7 @@ function App() {
   const [activeCa, setActiveCa] = useState<SupportedVerifiedCa | null>(null);
   const [wmps, setWmps] = useState<WebMediaProfile[]>([]);
   const [filterType, setFilterType] = useState<CaFilterType>("All");
+  const [, setSelectedTrustUrl] = useState<string | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
 
   const handleClose = () => dialog.current?.close();
@@ -64,9 +65,17 @@ function App() {
       handleClose();
     });
 
+    const cleanupSelectTrustNode = overlayWindowMessenger.onMessage(
+      "selectTrustNode",
+      ({ data }) => {
+        setSelectedTrustUrl(data.url);
+      },
+    );
+
     return () => {
       cleanupEnter();
       cleanupLeave();
+      cleanupSelectTrustNode();
     };
   });
 
