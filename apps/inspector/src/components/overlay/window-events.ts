@@ -13,10 +13,19 @@ export type OverlayProtocolMap = {
     wmps: WebMediaProfile[];
     filterType?: CaFilterType;
   }): void;
+
   /** オーバーレイの終了 */
   leave(message: null): void;
+
   /** オーバーレイ上 CA の選択 */
-  select(message: { activeCa: SupportedVerifiedCa }): void;
+  select(message: {
+    activeCa: SupportedVerifiedCa;
+  }): void;
+
+  /** Trust Tree 上で選択されたコンテンツ */
+  selectTrustNode(message: {
+    url: string | null;
+  }): void;
 };
 
 export const overlayWindowMessenger =

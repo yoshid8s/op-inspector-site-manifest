@@ -122,6 +122,12 @@ trustTreeMessenger.onMessage("focusTrustNode", ({ data }) => {
     block: "center",
   });
 
+  overlayWindowMessenger.sendMessage(
+    "selectTrustNode",
+    { url: data.url },
+    overlay.window,
+  );
+
   const previousOutline = element.style.outline;
   const previousOutlineOffset = element.style.outlineOffset;
 
