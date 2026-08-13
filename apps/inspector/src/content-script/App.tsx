@@ -28,7 +28,7 @@ function App() {
   const [activeCa, setActiveCa] = useState<SupportedVerifiedCa | null>(null);
   const [wmps, setWmps] = useState<WebMediaProfile[]>([]);
   const [filterType, setFilterType] = useState<CaFilterType>("All");
-  const [, setSelectedTrustUrl] = useState<string | null>(null);
+  const [selectedTrustUrl, setSelectedTrustUrl] = useState<string | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
 
   const handleClose = () => dialog.current?.close();
@@ -105,6 +105,7 @@ function App() {
       <ContentsArea
         className="absolute top-0 left-0"
         contents={pageCas.flatMap((ca) => ca.attestation.doc.target)}
+        selectedTrustUrl={selectedTrustUrl}
       />
       <Panel>
         <CasMap

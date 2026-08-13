@@ -1,7 +1,8 @@
 import { Target } from "@originator-profile/model";
-import { useId } from "react";
+import { useId, useMemo } from "react";
 import { useWindowSize } from "react-use";
 import { twMerge } from "tailwind-merge";
+import { findLinkedElement } from "../../services/trust-graph/find-linked-element";
 import { CaCoordinate, FrameCoordinate } from "../frameCas/types";
 import { useFrameCaRects } from "../frameCas/use-frame-ca-rects";
 import { useLocatedCasCoordinate } from "../frameCas/use-located-cas-coordinate";
@@ -17,7 +18,11 @@ function ElementRect({
   className?: string;
 } & React.SVGAttributes<SVGRectElement>) {
   const { rect } = useRect(element);
-  if (!rect) return null;
+
+  if (!rect) {
+    return null;
+  }
+
   return (
     <rect
       className={className}
@@ -41,6 +46,7 @@ function FrameRect({
   className?: string;
 } & React.SVGAttributes<SVGRectElement>) {
   const rects = useFrameCaRects(frame, ca);
+
   return (
     <>
       {rects.map((rect, index) => (
@@ -61,13 +67,26 @@ function FrameRect({
 type Props = {
   className?: string;
   contents: Target[];
+  selectedTrustUrl?: string | null;
 };
 
 export function ContentsArea(props: Props) {
   const { width, height } = useWindowSize();
-  const { framesCasCoordinate, isLocating } = useLocatedCasCoordinate();
+  const { framesCasCoordinate, isLocating } =
+    useLocatedCasCoordinate();
   const { elements } = useElements(props.contents);
   const id = useId();
+
+  const selectedTrustElement = useMemo(() => {
+    if (!props.selectedTrustUrl) {
+      return null;
+    }
+
+    return findLinkedElement(
+      window.parent.document,
+      props.selectedTrustUrl,
+    );
+  }, [props.selectedTrustUrl]);
 
   return (
     <svg
@@ -79,7 +98,14 @@ export function ContentsArea(props: Props) {
     >
       <defs>
         <mask id={id}>
-          <rect className="fill-white" x="0" y="0" width="100%" height="100%" />
+          <rect
+            className="fill-white"
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+          />
+
           {elements.map((element, index) => (
             <ElementRect
               key={`element-${index}`}
@@ -87,21 +113,26 @@ export function ContentsArea(props: Props) {
               element={element}
             />
           ))}
-          {framesCasCoordinate.flatMap((frameCasCoordinate) =>
-            frameCasCoordinate.cas.map((ca) => (
-              <FrameRect
-                key={`${frameCasCoordinate.frameId}-${ca.id}`}
-                className={twMerge(
-                  "transition transition-discrete fill-black starting:opacity-0",
-                  isLocating ? "opacity-0 hidden" : "opacity-100",
-                )}
-                frame={frameCasCoordinate}
-                ca={ca}
-              />
-            )),
+
+          {framesCasCoordinate.flatMap(
+            (frameCasCoordinate) =>
+              frameCasCoordinate.cas.map((ca) => (
+                <FrameRect
+                  key={`${frameCasCoordinate.frameId}-${ca.id}`}
+                  className={twMerge(
+                    "transition transition-discrete fill-black starting:opacity-0",
+                    isLocating
+                      ? "opacity-0 hidden"
+                      : "opacity-100",
+                  )}
+                  frame={frameCasCoordinate}
+                  ca={ca}
+                />
+              )),
           )}
         </mask>
       </defs>
+
       <rect
         className="fill-black/25"
         x="0"
@@ -110,6 +141,7 @@ export function ContentsArea(props: Props) {
         height="100%"
         mask={`url(#${id})`}
       />
+
       {elements.map((element, index) => (
         <ElementRect
           key={`element-${index}`}
@@ -118,19 +150,33 @@ export function ContentsArea(props: Props) {
           strokeDasharray="4"
         />
       ))}
-      {framesCasCoordinate.flatMap((frameCasCoordinate) =>
-        frameCasCoordinate.cas.map((ca) => (
-          <FrameRect
-            key={`${frameCasCoordinate.frameId}-${ca.id}`}
-            className={twMerge(
-              "transition transition-discrete fill-transparent stroke-[#bc15ac] stroke-1 starting:opacity-0",
-              isLocating ? "opacity-0 hidden" : "opacity-100",
-            )}
-            frame={frameCasCoordinate}
-            ca={ca}
-            strokeDasharray="4"
-          />
-        )),
+
+      {framesCasCoordinate.flatMap(
+        (frameCasCoordinate) =>
+          frameCasCoordinate.cas.map((ca) => (
+            <FrameRect
+              key={`${frameCasCoordinate.frameId}-${ca.id}`}
+              className={twMerge(
+                "transition transition-discrete fill-transparent stroke-[#bc15ac] stroke-1 starting:opacity-0",
+                isLocating
+                  ? "opacity-0 hidden"
+                  : "opacity-100",
+              )}
+              frame={frameCasCoordinate}
+              ca={ca}
+              strokeDasharray="4"
+            />
+          )),
+      )}
+
+      {selectedTrustElement && (
+        <ElementRect
+          element={selectedTrustElement}
+          fill="transparent"
+          stroke="#bc15ac"
+          strokeWidth={3}
+          strokeDasharray="8 4"
+        />
       )}
     </svg>
   );
