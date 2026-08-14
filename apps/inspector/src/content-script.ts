@@ -20,6 +20,8 @@ import { findLinkedElement } from "./services/trust-graph/find-linked-element";
 
 import { annotatePresence } from "./services/trust-graph/annotate-presence";
 
+import { annotateDeclaration } from "./services/trust-graph/annotate-declaration";
+
 const overlay = new Overlay();
 let enter: Parameters<OverlayProtocolMap["enter"]>[0] = {
   framesCas: [],
@@ -102,7 +104,9 @@ trustTreeMessenger.onMessage("resolveSiteTrustGraph", async ({ data }) => {
         const resolved = await resolveSiteManifest(src);
 
         if (resolved) {
-          return annotatePresence(document, resolved.root);
+          const withPresence = annotatePresence(document, resolved.root);
+
+          return annotateDeclaration(document, withPresence);
         }
       } catch {
         // The external resource may not be a Site Manifest.

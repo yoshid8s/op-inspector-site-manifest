@@ -8,6 +8,8 @@ export type TrustNodeType =
   | "paragraph"
   | "advertisement";
 
+export type TrustNodeDeclaration = "unknown" | "declared" | "undeclared";
+
 export interface TrustNode {
   id: string;
   type: TrustNodeType;
@@ -20,4 +22,5 @@ export interface TrustNode {
   verified?: boolean;
   lazy?: boolean;
   children?: TrustNode[];
+  declaration?: TrustNodeDeclaration;
 }
