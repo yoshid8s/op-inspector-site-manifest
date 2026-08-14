@@ -1,3 +1,5 @@
+export type TrustNodePresence = "unknown" | "present" | "missing";
+
 export type TrustNodeType =
   | "site"
   | "manifest"
@@ -12,6 +14,9 @@ export interface TrustNode {
   title: string;
   url?: string;
   casUrl?: string;
+
+  presence?: TrustNodePresence;
+
   verified?: boolean;
   lazy?: boolean;
   children?: TrustNode[];
