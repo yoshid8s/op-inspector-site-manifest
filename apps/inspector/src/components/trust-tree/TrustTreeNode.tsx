@@ -66,6 +66,23 @@ export function TrustTreeNode({
             ].join(" ")}
             onClick={() => onSelect?.(node)}
           >
+            <span
+              aria-label={
+                node.presence === "present"
+                  ? "Present on page"
+                  : node.presence === "missing"
+                    ? "Missing from page"
+                    : "Presence unknown"
+              }
+              className="mr-1"
+            >
+              {node.presence === "present"
+                ? "✓"
+                : node.presence === "missing"
+                  ? "!"
+                  : "·"}
+            </span>
+
             {node.title}
           </button>
         ) : (
