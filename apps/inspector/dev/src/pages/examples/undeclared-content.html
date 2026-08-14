@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Undeclared content test</title>
+  </head>
+
+  <body>
+    <script src="./ops.json" type="application/ops+json"></script>
+    <script src="./cas-undeclared.json" type="application/cas+json"></script>
+    <iframe
+      src="/examples/site-manifest.json"
+      integrity="sha256-TPXl21sqhjAU3jgiUw32P04j2ZvjQBE0wQl8m0na66I="
+      hidden
+    ></iframe>
+
+    <main>
+      <h1>Undeclared content test</h1>
+
+      <article>
+        <h2>
+          <a href="/examples/declared-article.html"> Declared article </a>
+        </h2>
+        <p>This article represents content that is expected to be declared.</p>
+      </article>
+
+      <article>
+        <h2>
+          <a href="/examples/fake-injected-article.html">
+            Fake injected article
+          </a>
+        </h2>
+        <p>
+          This article exists in the DOM but is intentionally not declared in
+          the Site Manifest.
+        </p>
+      </article>
+    </main>
+  </body>
+</html>

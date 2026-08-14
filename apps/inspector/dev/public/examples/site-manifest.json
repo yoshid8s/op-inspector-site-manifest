@@ -1,0 +1,14 @@
+{
+  "site": "http://localhost:8080/",
+  "page": "http://localhost:8080/examples/undeclared-content.html",
+  "generatedAt": "2026-08-14T00:00:00.000Z",
+  "items": [
+    {
+      "position": 1,
+      "role": "article",
+      "headline": "Declared article",
+      "url": "http://localhost:8080/examples/declared-article.html",
+      "casUrl": "http://localhost:8080/examples/cas-1.json"
+    }
+  ]
+}

@@ -68,25 +68,32 @@ export function TrustTreeNode({
           >
             <span
               aria-label={
-                node.presence === "present"
-                  ? "Present on page"
-                  : node.presence === "missing"
-                    ? "Missing from page"
-                    : "Presence unknown"
+                node.declaration === "undeclared"
+                  ? "Observed on page but not declared in Site Manifest"
+                  : node.presence === "present"
+                    ? "Present on page"
+                    : node.presence === "missing"
+                      ? "Missing from page"
+                      : "Presence unknown"
               }
               className="mr-1"
             >
-              {node.presence === "present"
-                ? "✓"
-                : node.presence === "missing"
-                  ? "!"
-                  : "·"}
+              {node.declaration === "undeclared"
+                ? "⚠"
+                : node.presence === "present"
+                  ? "✓"
+                  : node.presence === "missing"
+                    ? "!"
+                    : "·"}
             </span>
 
             {node.title}
           </button>
         ) : (
-          <span className="min-w-0 break-words">{node.title}</span>
+          <span className="min-w-0 break-words">
+            {node.id === "section:undeclared" ? "⚠ " : ""}
+            {node.title}
+          </span>
         )}
       </div>
 
