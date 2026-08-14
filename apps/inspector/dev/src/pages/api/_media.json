@@ -1,0 +1,37 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://originator-profile.org/ns/credentials/v1",
+    "https://originator-profile.org/ns/cip/v1",
+    {
+      "@language": "ja-JP"
+    }
+  ],
+  "type": ["VerifiableCredential", "WebMediaProfile"],
+  "issuer": "dns:localhost",
+  "credentialSubject": {
+    "id": "dns:localhost",
+    "type": "OnlineBusiness",
+    "name": "Example OP Holder",
+    "url": "http://localhost:8080/",
+    "description": [
+      "これはサンプルの WebMediaProfile です。",
+      {
+        "encodingFormat": "text/html",
+        "text": "<p>これはサンプルの WebMediaProfile です。</p><p>ご覧のようにHTMLをサポートしています。</p><p>改行<br>つきの段落</p><ul><li>項目</li><li>項目</li><li>項目</li></ul><ol><li>項目</li><li>項目</li><li>項目</li></ol>"
+      }
+    ],
+    "informationTransmissionPolicy": {
+      "id": "https://wmp-holder.example.jp/statement",
+      "name": "情報発信ポリシー"
+    },
+    "publishingPrinciple": {
+      "id": "https://wmp-holder.example.jp/editorial-guidelines",
+      "name": "編集ガイドライン"
+    },
+    "privacyPolicy": {
+      "id": "https://wmp-holder.example.jp/privacy",
+      "name": "プライバシーポリシー"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://originator-profile.org/ns/credentials/v1",
+    "https://originator-profile.org/ns/cip/v1",
+    {
+      "@language": "ja-JP"
+    }
+  ],
+  "type": ["VerifiableCredential", "ContentAttestation"],
+  "issuer": "dns:localhost",
+  "credentialSubject": {
+    "type": "Article",
+    "headline": "Site Manifest undeclared content test",
+    "image": {
+      "id": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjwvc3ZnPg=="
+    },
+    "description": "Site Manifest undeclared content test",
+    "author": ["OP Inspector"],
+    "editor": ["OP Inspector"],
+    "datePublished": "2026-08-14T00:00:00Z",
+    "dateModified": "2026-08-14T00:00:00Z",
+    "genre": "Testing"
+  },
+  "allowedUrl": "http://localhost:8080/*",
+  "target": [
+    {
+      "type": "ExternalResourceTargetIntegrity",
+      "content": "http://localhost:8080/examples/site-manifest.json"
+    }
+  ]
+}

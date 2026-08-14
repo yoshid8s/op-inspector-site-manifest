@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "esnext",
+    "allowJs": true,
+    // TODO: 後方互換性の観点で ["*"] としているがパフォーマンスの観点では無くして明示すべし (https://devblogs.microsoft.com/typescript/announcing-typescript-6-0/#types-now-defaults-to-[])
+    "types": ["*"]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [
+        ".nuxt/**",
+        "dist-*/**",
+        "dist/**",
+        "oclif.manifest.json",
+        "web-ext-artifacts-*/**",
+        "web-ext-artifacts/**"
+      ]
+    },
+    "dev": {
+      "persistent": true,
+      "cache": false
+    },
+    "e2e": {
+      "persistent": false,
+      "cache": false
+    },
+    "e2e:update": {
+      "persistent": false,
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": ["build"],
+      "outputs": []
+    },
+    "@originator-profile/inspector#build": {
+      "dependsOn": ["^build"],
+      "env": [
+        "NODE_ENV",
+        "BASIC_AUTH",
+        "BASIC_AUTH_CREDENTIALS",
+        "REGISTRY_OPS"
+      ]
+    },
+    "demo-page#build": {
+      "dependsOn": ["@originator-profile/vite-plugin#build"],
+      "env": ["SIGNING_KEY_DEMO", "SIGNING_KEY_ANOTHER", "SIGNING_KEY_AD"]
+    }
+  }
+}

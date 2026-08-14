@@ -1,57 +1,16 @@
 import { Target } from "@originator-profile/model";
 import { TargetIntegrityAlgorithm } from "@originator-profile/verify";
 import { useEffect, useState } from "react";
-import { isSiteManifest } from "./types";
+import { TrustNode } from "../../../models/trust-node";
+import { resolveSiteManifest } from "../../../services/external-resource/site-manifest-resolver";
+import { findLinkedElement } from "../../../services/trust-graph/find-linked-element";
 
-function normalizeUrl(value: string, baseUrl: string): string | null {
-  try {
-    const url = new URL(value, baseUrl);
+function getArticleNodes(node: TrustNode): TrustNode[] {
+  const own = node.type === "article" ? [node] : [];
 
-    url.hash = "";
+  const children = node.children?.flatMap(getArticleNodes) ?? [];
 
-    if (url.pathname !== "/" && url.pathname.endsWith("/")) {
-      url.pathname = url.pathname.replace(/\/+$/, "");
-    }
-
-    return url.toString();
-  } catch {
-    return null;
-  }
-}
-
-function findLinkedElement(
-  document: Document,
-  itemUrl: string,
-): HTMLElement | null {
-  const expectedUrl = normalizeUrl(itemUrl, document.location.href);
-
-  if (!expectedUrl) {
-    return null;
-  }
-
-  const anchors = Array.from(
-    document.querySelectorAll<HTMLAnchorElement>("a[href]"),
-  );
-
-  const anchor = anchors.find((candidate) => {
-    const candidateUrl = normalizeUrl(
-      candidate.href,
-      document.location.href,
-    );
-
-    return candidateUrl === expectedUrl;
-  });
-
-  if (!anchor) {
-    return null;
-  }
-
-  return (
-    anchor.closest<HTMLElement>("article") ??
-    anchor.closest<HTMLElement>("li") ??
-    anchor.closest<HTMLElement>("section") ??
-    anchor
-  );
+  return [...own, ...children];
 }
 
 export function useSiteManifestElements(targets: Target[]) {
@@ -70,13 +29,12 @@ export function useSiteManifestElements(targets: Target[]) {
       const manifestElements: HTMLElement[] = [];
 
       for (const target of externalTargets) {
-        const resourceElements =
-          TargetIntegrityAlgorithm[
-            target.type
-          ].elementSelector({
-            ...target,
-            document,
-          });
+        const resourceElements = TargetIntegrityAlgorithm[
+          target.type
+        ].elementSelector({
+          ...target,
+          document,
+        });
 
         for (const resourceElement of resourceElements) {
           const element = resourceElement as HTMLElement & {
@@ -91,30 +49,27 @@ export function useSiteManifestElements(targets: Target[]) {
           }
 
           try {
-            const response = await fetch(src);
+            const resolved = await resolveSiteManifest(src);
 
-            if (!response.ok) {
+            if (!resolved) {
               continue;
             }
 
-            const payload = await response.json();
+            const articleNodes = getArticleNodes(resolved.root);
 
-            if (!isSiteManifest(payload)) {
-              continue;
-            }
+            for (const article of articleNodes) {
+              if (!article.url) {
+                continue;
+              }
 
-            for (const item of payload.items) {
-              const linkedElement = findLinkedElement(
-                document,
-                item.url,
-              );
+              const linkedElement = findLinkedElement(document, article.url);
 
               if (linkedElement) {
                 manifestElements.push(linkedElement);
               }
             }
           } catch {
-            // External resource may not be a Site Manifest JSON.
+            // External resource may not be a Site Manifest.
           }
         }
       }
