@@ -21,24 +21,35 @@ export async function sign(
 ): Promise<string> {
   const inputPath = new URL(input, import.meta.url).pathname;
 
-  const result = await execFile("npx", [
-    "@originator-profile/opvc",
-    mode === "ca" ? "ca:sign" : "sign",
-    "--identity",
-    keyPath,
-    "--input",
-    inputPath,
-    "--expired-at",
-    new Date(
-      Date.now() +
-        10 * // year
-          365.25 *
-          24 *
-          60 *
-          60 *
-          1000,
-    ).toISOString(),
-  ]);
+  const result = await execFile(
+    "npx",
+    [
+      "@originator-profile/opvc",
+      mode === "ca" ? "ca:sign" : "sign",
+      "--identity",
+      keyPath,
+      "--input",
+      inputPath,
+      "--expired-at",
+      new Date(
+        Date.now() +
+          10 * // year
+            365.25 *
+            24 *
+            60 *
+            60 *
+            1000,
+      ).toISOString(),
+    ],
+    {
+      env: {
+        ...process.env,
+        NODE_OPTIONS: [process.env.NODE_OPTIONS, "--import=urlpattern-polyfill"]
+          .filter(Boolean)
+          .join(" "),
+      },
+    },
+  );
 
   return result.stdout.trim();
 }

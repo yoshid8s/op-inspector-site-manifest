@@ -59,6 +59,7 @@
     "tailwind-merge": "3.5.0",
     "tailwindcss": "4.2.2",
     "typed-url-params": "1.0.1",
+    "urlpattern-polyfill": "10.1.0",
     "use-debounce": "10.1.1",
     "vitest": "4.1.4",
     "web-ext": "10.1.0",

@@ -1,3 +1,4 @@
+import "urlpattern-polyfill";
 import { z } from "zod";
 
 function isValidUrlPattern(val: string): boolean {
